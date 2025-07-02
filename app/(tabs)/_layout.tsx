@@ -9,37 +9,50 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+      }}
+    >
+      {/* Apenas as telas desejadas, sem o botão Explore */}
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="cadastrar-produto"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Cadastrar',
         }}
       />
+      <Tabs.Screen
+        name="buscar-produto"
+        options={{
+          title: 'Buscar',
+        }}
+      />
+      <Tabs.Screen
+        name="relatorios"
+        options={{
+          title: 'Relatórios',
+        }}
+      />
+      <Tabs.Screen
+        name="estoque"
+        options={{
+          title: 'Estoque',
+        }}
+      />
+      <Tabs.Screen
+        name="configuracoes"
+        options={{
+          title: 'Configurações',
+        }}
+      />
+      {/* NÃO adicione <Tabs.Screen name="explore" ... /> */}
     </Tabs>
   );
 }

@@ -1,12 +1,27 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, View, Button, TouchableOpacity, Text } from 'react-native';
+import { useContext } from 'react';
+import { useNavigation } from 'expo-router';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { ProductContext } from '@/context/ProductContext';
 
 export default function HomeScreen() {
+  const navigation = useNavigation() as any;
+  const { products } = useContext(ProductContext);
+
+  // Resumo simples
+  const totalProdutos = products.length;
+  const totalEstoque = products.reduce((acc, p) => acc + Number(p.quantidade), 0);
+  const valorTotalEstoque = products.reduce((total, p) => {
+    const preco = Number(p.preco) || 0;
+    const quantidade = Number(p.quantidade) || 0;
+    return total + preco * quantidade;
+  }, 0);
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -17,39 +32,33 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">Bem-vindo!</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+        <ThemedText type="subtitle">Resumo do Estoque</ThemedText>
+        <ThemedText>Total de Produtos: {totalProdutos}</ThemedText>
+        <ThemedText>Total em Estoque: {totalEstoque}</ThemedText>
         <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
+          Valor total em estoque: <ThemedText style={{ fontWeight: 'bold' }}>R$ {valorTotalEstoque.toFixed(2)}</ThemedText>
         </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('cadastrar-produto')}>
+            <Text style={styles.buttonText}>Cadastrar Produto</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('buscar-produto')}>
+            <Text style={styles.buttonText}>Buscar Produto</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('relatorios')}>
+            <Text style={styles.buttonText}>Relatórios</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('estoque')}>
+            <Text style={styles.buttonText}>Estoque</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('configuracoes')}>
+            <Text style={styles.buttonText}>Configurações</Text>
+          </TouchableOpacity>
+        </View>
       </ThemedView>
     </ParallaxScrollView>
   );
@@ -68,8 +77,31 @@ const styles = StyleSheet.create({
   reactLogo: {
     height: 178,
     width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  },
+  buttonsContainer: {
+    marginTop: 32,
+    gap: 16,
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: '#1976d2',
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+    marginVertical: 4,
+    minWidth: 220,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 17,
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
 });
